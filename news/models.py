@@ -13,7 +13,7 @@ class Author(models.Model):
 
         c_rating = self.author.comment_set.aggregate(commentRating= Sum('comment_rating'))
         c_rat = 0
-        c_rat += c_rating.get('commentRating')
+        c_rat += c_rating.get('commentRating') or 0
 
         self.author_rating = p_rat * 3 + c_rat
         self.save()
@@ -33,7 +33,7 @@ class Post(models.Model):
         (article, 'статья'),
         (news, 'новость')
     ]
-    author_post = models.ForeignKey(Author, on_delete= models.CASCADE)
+    author = models.ForeignKey(Author, on_delete= models.CASCADE)
     type_post = models.CharField(max_length=2, choices= TYPES, default= news) 
     date_post = models.DateTimeField(auto_now_add= True)
     categories_post = models.ManyToManyField(Category, through= 'PostCategory')
