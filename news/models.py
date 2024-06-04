@@ -18,10 +18,23 @@ class Author(models.Model):
         self.author_rating = p_rat * 3 + c_rat
         self.save()
 
+    def __str__(self):
+        return self.author
+    
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
 
 
 class Category(models.Model):
     name_category = models.CharField(max_length=255, unique= True)
+
+    def __str__(self):
+        return self.name_category
+    
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 
@@ -51,7 +64,14 @@ class Post(models.Model):
             self.save()    
 
     def preview(self):
-        return self.text_post[0:123] + '...'        
+        return self.text_post[0:123] + '...'    
+
+    def __str__(self):
+        return self.name_post
+    
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
 
 class PostCategory(models.Model):
@@ -74,3 +94,10 @@ class Comment(models.Model):
         if self.comment_rating != 0:
             self.comment_rating -= 1
             self.save()   
+
+    #def __str__(self):
+    #    return self.comment_user
+    
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'        
