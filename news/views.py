@@ -17,7 +17,7 @@ class PostList(ListView):
     model = Post
     ordering = 'date_post'
     context_object_name = 'posts'
-    template_name = 'post/news_list.html'
+    template_name = 'news_list.html'
     paginate_by = 10 
 
     def get_queryset(self):
@@ -42,7 +42,7 @@ class PostSearch(FilterView):
 class PostDetail(DetailView):
     model = Post
     context_object_name = 'post'
-    template_name = 'post/post_detail.html'
+    template_name = 'post_detail.html'
     #queryset = Post.objects.get(pk=pk)
 
 class PostCreate(CreateView):

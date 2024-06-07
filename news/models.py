@@ -71,7 +71,7 @@ class Post(models.Model):
         return self.name_post
     
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.id)])
+        return reverse('post' , args=[str(self.id)])
     
     class Meta:
         verbose_name = 'Пост'

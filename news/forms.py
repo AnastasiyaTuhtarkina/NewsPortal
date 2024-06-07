@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Author
 from django.core.exceptions import ValidationError
 
 
