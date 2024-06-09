@@ -11,6 +11,7 @@ class PostForm(forms.ModelForm):
            'name_post',
            'categories_post',
            'text_post',
+           'author'
        ]
        widgets = {
            'name_post': forms.Textarea(attrs={'class': 'form-taxt', 'cols': 70, 'rows': 3}),

@@ -20,15 +20,6 @@ class PostList(ListView):
     template_name = 'news_list.html'
     paginate_by = 10 
 
-    def get_queryset(self):
-       queryset = super().get_queryset()
-       self.filterset = PostFilter(self.request.GET, queryset)
-       return self.filterset.qs
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['filterset'] = self.filterset
-        return context
     
 class PostSearch(FilterView):    
     model = Post
@@ -38,6 +29,15 @@ class PostSearch(FilterView):
     context_object_name = 'news'
     paginate_by = 50
 
+    def get_queryset(self):
+       queryset = super().get_queryset()
+       self.filterset = PostFilter(self.request.GET, queryset)
+       return self.filterset.qs
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context
 
 class PostDetail(DetailView):
     model = Post

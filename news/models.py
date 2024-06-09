@@ -20,7 +20,7 @@ class Author(models.Model):
         self.save()
 
     def __str__(self):
-        return self.author
+        return self.author.username
     
     class Meta:
         verbose_name = 'Автор'
