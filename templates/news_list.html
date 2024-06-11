@@ -13,8 +13,8 @@
 <!-- В контенте на странице мы выводим все прсты -->
 {% block content %}
 <p>Количество новостей : {{ posts|length }}</p>
-    {% if is_not_author %}
-     <button><a href="{% url 'Author_now' %}">Стать автором</a></button>
+    {% if Is_not_author %}
+     <button><a href="{% url 'author_now' %}">Стать автором</a></button>
     {% endif %}
 <h1> Список новостей </h1> <hr>
  {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
