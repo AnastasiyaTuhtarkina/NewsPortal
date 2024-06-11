@@ -13,13 +13,42 @@
 <!-- В контенте на странице мы выводим все прсты -->
 {% block content %}
 <p>Количество новостей : {{ posts|length }}</p>
+    {% if is_not_author %}
+     <button><a href="{% url 'Author_now' %}">Стать автором</a></button>
+    {% endif %}
 <h1> Список новостей </h1> <hr>
+ {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
+ {% if perms.news.add_product %}
+ <a href="{% url 'news_create' %}">Добавить новость</a> <a href="{% url 'articles_create' %}">Добавить статью</a>
+ {% endif %}
 <table>
+    <tr>
+        <td>Название</td>
+        <td>Дата</td>
+        <td>Описание</td>
+
+        {# Условие получается составным. #}
+        {% if perms.news.change_product or perms.news.delete_product %}
+        <td>Действия</td>
+        {% endif %}
+
+    </tr>
     {% for i in posts %}
     <tr>
         <td>{{ i.name_post|censor }}</td>
         <td>{{ i.date_post|date:'d M Y' }}</td>
         <td>{{ i.text_post|truncatewords:20|censor }}</td>
+
+        <td>
+            {# А здесь доступ для каждой ссылки теперь будем проверять отдельно #}
+            {% if perms.news.change_product %}
+            <a href="{% url 'news_update' pk=i.id %}">Изменить</a>
+            {% endif %}
+            {% if perms.news.delete_product %}
+            <a href="{% url 'news_delete' i.id %}">Удалить</a>
+            {% endif %}
+        </td>
+
     </tr>
     {% endfor %}
 </table>

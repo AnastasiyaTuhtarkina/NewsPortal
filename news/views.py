@@ -1,11 +1,14 @@
 from typing import Any
 from django.urls import reverse_lazy
-from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import *
 from django_filters.views import FilterView
-from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Group
+from django.shortcuts import redirect
+
+from .models import *
+from .forms import PostForm
 from .filters import PostFilter
 
 
@@ -19,6 +22,11 @@ class PostList(ListView):
     context_object_name = 'posts'
     template_name = 'news_list.html'
     paginate_by = 10 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
 
     
 class PostSearch(FilterView):    
@@ -45,7 +53,9 @@ class PostDetail(DetailView):
     template_name = 'post_detail.html'
     #queryset = Post.objects.get(pk=pk)
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_product',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -56,12 +66,22 @@ class PostCreate(CreateView):
             post.type_post = 'AR'
         return super().form_valid(form)
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_product',)
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_product',)
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+def Author_now(request):
+    user = request.user
+    author_group = Group.objects.get(name='authors')
+    if not user.groups.filter(name='authors').exists():
+        user.groups.add(author_group)
+    return redirect('post')    
