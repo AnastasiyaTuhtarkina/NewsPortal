@@ -9,6 +9,9 @@
 
 {% block content %}
     <h1>Поиск постов</h1>
+        {% if Is_not_author %}
+            <button><a href="{% url 'author_now' %}">Стать автором</a></button>
+        {% endif %}
     <form action="" method="get">
         {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
         {{ filterset.form.as_p }}

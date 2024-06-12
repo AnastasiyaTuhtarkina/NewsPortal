@@ -84,4 +84,4 @@ def Author_now(request):
     author_group = Group.objects.get(name='authors')
     if not user.groups.filter(name='authors').exists():
         user.groups.add(author_group)
-    return redirect('post')    
+    return redirect(request.META['HTTP_REFERER'])    
