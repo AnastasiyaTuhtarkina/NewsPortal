@@ -92,6 +92,8 @@ class PostCreate(PermissionRequiredMixin, CreateView):
         post = form.save(commit=False)
         if self.request.path == 'articles/create/':
             post.type_post = 'AR'
+        else:
+            post.type_post = 'NW'    
         return super().form_valid(form)
 
 class PostUpdate(PermissionRequiredMixin, UpdateView):
