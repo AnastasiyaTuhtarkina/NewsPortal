@@ -19,6 +19,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("accounts/", include("allauth.urls")), 
     path('pages/', include('django.contrib.flatpages.urls')),
     path('', include('news.urls')),
     path('id/', include('news.urls')),

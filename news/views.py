@@ -1,17 +1,48 @@
 from typing import Any
 from django.urls import reverse_lazy
-from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import *
 from django_filters.views import FilterView
-from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Group
+from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_protect
+from django.db.models import Exists, OuterRef
+
+from .models import *
+from .forms import PostForm
 from .filters import PostFilter
 
 
 @login_required
-def show_protected_page(requests):
-    pass
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name_category')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions},
+    )
 
 class PostList(ListView):
     model = Post
@@ -19,6 +50,20 @@ class PostList(ListView):
     context_object_name = 'posts'
     template_name = 'news_list.html'
     paginate_by = 10 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
+
+    
+class PostSearch(FilterView):    
+    model = Post
+    ordering = 'date_post'
+    filterset_class = PostFilter
+    template_name = 'post_search.html'
+    context_object_name = 'news'
+    paginate_by = 50
 
     def get_queryset(self):
        queryset = super().get_queryset()
@@ -29,15 +74,6 @@ class PostList(ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
-    
-class PostSearch(FilterView):    
-    model = Post
-    ordering = 'date_post'
-    filterset_class = PostFilter
-    template_name = 'post_search.html'
-    context_object_name = 'news'
-    paginate_by = 50
-
 
 class PostDetail(DetailView):
     model = Post
@@ -45,7 +81,9 @@ class PostDetail(DetailView):
     template_name = 'post_detail.html'
     #queryset = Post.objects.get(pk=pk)
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_product',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -54,14 +92,26 @@ class PostCreate(CreateView):
         post = form.save(commit=False)
         if self.request.path == 'articles/create/':
             post.type_post = 'AR'
+        else:
+            post.type_post = 'NW'    
         return super().form_valid(form)
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_product',)
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_product',)
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+def Author_now(request):
+    user = request.user
+    author_group = Group.objects.get(name='authors')
+    if not user.groups.filter(name='authors').exists():
+        user.groups.add(author_group)
+    return redirect(request.META['HTTP_REFERER'])    

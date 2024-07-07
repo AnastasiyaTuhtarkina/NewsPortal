@@ -20,7 +20,7 @@ class Author(models.Model):
         self.save()
 
     def __str__(self):
-        return self.author
+        return self.author.username
     
     class Meta:
         verbose_name = 'Автор'
@@ -105,3 +105,15 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'        
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )        

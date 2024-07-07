@@ -9,6 +9,9 @@
 
 {% block content %}
     <h1>Поиск постов</h1>
+        {% if Is_not_author %}
+            <button><a href="{% url 'author_now' %}">Стать автором</a></button>
+        {% endif %}
     <form action="" method="get">
         {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
         {{ filterset.form.as_p }}
@@ -16,14 +19,14 @@
         <input type="submit" value="Найти" />
     </form>
     <hr>
-    {% if posts %}
+    {% if news %}
 <table>
     <tr>
         <tr>Название поста</tr>
         <tr>Дата поста</tr>
         <tr>Текст</tr>
     </tr>
-    {% for i in posts %}
+    {% for i in news %}
     <tr>
         <td>{{ i.name_post|censor }}</td>
         <td>{{ i.date_post|date:'d M Y' }}</td>
