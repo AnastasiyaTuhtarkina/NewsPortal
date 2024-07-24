@@ -1,4 +1,6 @@
 from typing import Any
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
@@ -80,6 +82,14 @@ class PostDetail(DetailView):
     context_object_name = 'post'
     template_name = 'post_detail.html'
     #queryset = Post.objects.get(pk=pk)
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj    
 
 class PostCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_product',)

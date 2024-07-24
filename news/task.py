@@ -9,7 +9,7 @@ import time
 
 @shared_task
 def post_created(pk):
-    
+
     post = Post.objects.get(id=pk)
     categories = post.categories_post.all()
 
@@ -61,4 +61,4 @@ def send_mail_weekly():
 @shared_task
 def hello():
     time.sleep(10)
-    print("Hello, world!") 
+    print("Hello, world!")
