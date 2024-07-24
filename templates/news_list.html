@@ -4,6 +4,11 @@
  
 {% load custom_filters %}
 {% load custom_tags %}
+{% load cache %}
+    {% cache 10 header %}
+        {% block header %}
+        {% endblock header %}
+    {% endcache %} 
 
 <!-- Название у нас будет products -->
 {% block title %}
