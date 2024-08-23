@@ -62,8 +62,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    "allauth.account.middleware.AccountMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'NewsPaper.middlewares.TimezoneMiddleware', 
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'
@@ -126,9 +127,9 @@ LANGUAGES = [
     ('ru', 'Русский')
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

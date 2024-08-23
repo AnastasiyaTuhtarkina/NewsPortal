@@ -1,18 +1,21 @@
 <!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %} 
 
+{% load i18n %} 
 {% load custom_filters %}
 
  
 <!-- Название у нас будет products -->
 {% block title %}
-Новость: {{ post.name_post}}
+{% trans 'Новость :' %} {% blocktrans with name_post=post.name_post %} {{ name_post }} {% endblocktrans %}
 {% endblock title %}
  
 <!-- В контенте на странице мы выводим все прсты -->
 {% block content %}
-<h3>Содержание поста "{{ post.name_post|censor }}":</h3>
-{{ post.text_post|censor }}
+<h3>{% trans 'Содержание поста' %} {% blocktrans with name_post=post.name_post|censor %} "{{ name_post }}" {% endblocktrans %}:</h3>
+{% blocktrans with text_post=post.text_post|censor %} "{{ text_post }}" {% endblocktrans %}
+{% comment %} {{ post.text_post|censor }} {% endcomment %}
 <br>
-{{ post.date_post|date:'d M Y'}}
+{% blocktrans with date_post=post.date_post|date:'d M Y' %} "{{ date_post }}" {% endblocktrans %}
+{% comment %} {{ post.date_post|date:'d M Y'}} {% endcomment %}
 {% endblock content %}

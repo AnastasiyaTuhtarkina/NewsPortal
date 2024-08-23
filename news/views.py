@@ -1,6 +1,7 @@
 from typing import Any
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
+from django.http.response import HttpResponse #  импортируем респонс для проверки текста
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
@@ -10,11 +11,35 @@ from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Exists, OuterRef
+from django.utils import timezone
+from django.views import View
 
+from .translation import PostTranslationOptions
 from .models import *
 from .forms import PostForm
 from .filters import PostFilter
 
+import pytz #  импортируем стандартный модуль для работы с часовыми поясами
+ 
+ 
+class Index(View):
+    def get(self, request):
+ 
+        #.  Translators: This message appears on the home page only
+        models = PostTranslationOptions.objects.all()
+ 
+        context = {
+            'models': models,
+            'current_time': timezone.localtime(timezone.now()),
+            'timezones': pytz.common_timezones #  добавляем в контекст все доступные часовые пояса
+        }
+        
+        return HttpResponse(render(request, 'index.html', context))
+ 
+    #  по пост-запросу будем добавлять в сессию часовой пояс, который и будет обрабатываться написанным нами ранее middleware
+    def post(self, request):
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
 
 @login_required
 @csrf_protect

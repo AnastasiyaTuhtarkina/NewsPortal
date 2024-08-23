@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.urls import reverse
 from django.core.cache import cache
+from django.utils.translation import gettext as _
 
 class Author(models.Model):
     author = models.OneToOneField(User, on_delete= models.CASCADE)
@@ -29,7 +30,7 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name_category = models.CharField(max_length=255, unique= True)
+    name_category = models.CharField(max_length=255, unique= True, help_text='category name')
 
     def __str__(self):
         return self.name_category
@@ -69,7 +70,7 @@ class Post(models.Model):
         return self.text_post[0:123] + '...'    
 
     def __str__(self):
-        return f'{self.name_post} {self.quantity}'
+        return f'{self.name_post} {self.rating_post}'
     
     def get_absolute_url(self):
         #return reverse('post' , args=[str(self.id)])
