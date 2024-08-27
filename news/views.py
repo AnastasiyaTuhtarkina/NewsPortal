@@ -18,6 +18,7 @@ from .translation import PostTranslationOptions
 from .models import *
 from .forms import PostForm
 from .filters import PostFilter
+from .middlewares import *
 
 import pytz #  импортируем стандартный модуль для работы с часовыми поясами
  
@@ -26,7 +27,7 @@ class Index(View):
     def get(self, request):
  
         #.  Translators: This message appears on the home page only
-        models = PostTranslationOptions.objects.all()
+        models = Post.objects.all()
  
         context = {
             'models': models,
@@ -34,7 +35,7 @@ class Index(View):
             'timezones': pytz.common_timezones #  добавляем в контекст все доступные часовые пояса
         }
         
-        return HttpResponse(render(request, 'index.html', context))
+        return HttpResponse(render(request, 'default.html', context))
  
     #  по пост-запросу будем добавлять в сессию часовой пояс, который и будет обрабатываться написанным нами ранее middleware
     def post(self, request):

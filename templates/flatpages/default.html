@@ -35,7 +35,8 @@
                 <a class="navbar-brand" href="#">
                     {% comment %} <img src='{% img '/429809-svetik.svg' %}' width="30" height="30" class="d-inline-block align-top" alt=""> {% endcomment %}
                     {% trans 'Новостной портал' %}</a>
-                <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
+                <form action="{% url 'set_language' %}" method="POST"> 
+                    {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
                     <input type="hidden" name="next" value="{{ redirect_to }}">
                     {% get_current_language as LANGUAGE_CODE %}
                     <select name="language" id="">
