@@ -51,9 +51,6 @@
                     </select>
                     <input type="submit" value={% trans 'Выбор' %}>
                 </form>
-
-                <ul>   </ul>
-
                 {% get_current_timezone as TIME_ZONE %}
                 <form action="" method="POST">
                     {% csrf_token %}
@@ -66,14 +63,14 @@
                     <input type="submit" value={% trans 'Выбор' %}>
                 </form>
              
-                {{ TIME_ZONE }}
+                {% comment %} {{ TIME_ZONE }} {% endcomment %}
                 {{ current_time|timezone:TIME_ZONE }} <!-- Отображаем время в выбранном часовом поясе  -->
 
-                {% for model in models %}
+                {% comment %} {% for model in models %}
                 <div class="model-class">
                     {{ model.name }} 
                 </div>
-                {% endfor %}
+                {% endfor %} {% endcomment %}
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">

@@ -5,6 +5,10 @@ from django.forms import DateInput
 
 class PostFilter(FilterSet):
 
+    # def __init__(self, *args, **kwargs):
+    #     super(PostFilter, self).__init__(*args, **kwargs)
+    #     self.filters['name'].label = 'Имя'
+
     class Meta:
        model = Post
        fields = {

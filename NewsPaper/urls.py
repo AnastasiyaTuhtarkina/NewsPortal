@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.urls import path, include
 from django.contrib import admin
+from news.views import *
+
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),

@@ -19,28 +19,14 @@ from .models import *
 from .forms import PostForm
 from .filters import PostFilter
 from .middlewares import *
+from news.serializers import *
+
+from rest_framework import viewsets
+from rest_framework import permissions
 
 import pytz #  импортируем стандартный модуль для работы с часовыми поясами
  
- 
-class Index(View):
-    def get(self, request):
- 
-        #.  Translators: This message appears on the home page only
-        models = Post.objects.all()
- 
-        context = {
-            'models': models,
-            'current_time': timezone.localtime(timezone.now()),
-            'timezones': pytz.common_timezones #  добавляем в контекст все доступные часовые пояса
-        }
-        
-        return HttpResponse(render(request, 'default.html', context))
- 
-    #  по пост-запросу будем добавлять в сессию часовой пояс, который и будет обрабатываться написанным нами ранее middleware
-    def post(self, request):
-        request.session['django_timezone'] = request.POST['timezone']
-        return redirect('/')
+    
 
 @login_required
 @csrf_protect
@@ -82,7 +68,15 @@ class PostList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        context['current_time'] = timezone.now()
+        context['timezones'] = pytz.common_timezones #  добавляем в контекст все доступные часовые пояса
         return context
+    
+    
+    def post(self, request):
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect(request.META['HTTP_REFERER'])
+    
 
     
 class PostSearch(FilterView):    
@@ -151,3 +145,20 @@ def Author_now(request):
     if not user.groups.filter(name='authors').exists():
         user.groups.add(author_group)
     return redirect(request.META['HTTP_REFERER'])    
+
+
+# class CategoryViewset(viewsets.ModelViewSet):
+#    queryset = Category.objects.all()
+#    serializer_class = CategorySerializer 
+
+# class PostViewset(viewsets.ModelViewSet):
+#    queryset = Post.objects.all()
+#    serializer_class = PostSerializer
+#    def get_queryset(self):
+#        queryset = Post.objects.all()
+#        category_id = self.request.query_params.get('name_category_id', None)
+#        if category_id is not None:
+#            queryset = queryset.filter(post_category_id=category_id)
+#        return queryset
+
+ 

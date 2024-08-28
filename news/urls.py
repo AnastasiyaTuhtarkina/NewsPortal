@@ -1,6 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 from django.views.decorators.cache import cache_page
+# from rest_framework import routers
+
+# router = routers.DefaultRouter()
+# router.register(r'posts', PostViewset)
+# router.register(r'categorys', CategoryViewset)
 
 
 urlpatterns = [
@@ -15,4 +20,6 @@ urlpatterns = [
     path('articles/<int:pk>/delete/', PostDelete.as_view(), name='articles_delete'),
     path('author_now/', Author_now, name='author_now'),
     path('subscriptions/', subscriptions, name='subscriptions'),
+    # path('', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

@@ -17,8 +17,9 @@ def post_created_signals(instance, **kwargs):
 
 #         emails = set(emails)
 
-#         subject = f'Новый пост в категории {instance.categories_post.all()}'
-
+#         subject = f'Новый пост в категории {instance.categories_post.all()}'       
+#         #   subject = f'Новый пост в категории {','.join([category.name for category in instance.categories_post.all()])}'
+        
 #         text_content = (
 #             f'Название: {instance.name_post}\n'
 #             #f'Содержание: {instance.text_post}\n\n'
